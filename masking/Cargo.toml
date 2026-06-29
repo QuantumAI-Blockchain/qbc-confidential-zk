@@ -1,0 +1,31 @@
+[package]
+name = "qbc-pq-confidential"
+version = "0.1.0"
+edition = "2021"
+description = "Post-quantum confidential-transaction proofs (Winterfell STARK, FRI/hash-based) for QBC L1"
+license = "MIT"
+
+[lib]
+crate-type = ["rlib"]
+
+[dependencies]
+# default-features off ⇒ no_std. The verifier + AIR run inside the substrate runtime;
+# the prover (gated by the `prover` feature) is std-only (CLI / browser-wasm), never the runtime.
+winterfell = { version = "0.9", default-features = false }
+# Cryptographic randomness for ZK masking rows. Prover-only. "js" → browser wasm.
+getrandom = { version = "0.2", optional = true, features = ["js"] }
+
+[features]
+default = ["std", "prover"]
+std = ["winterfell/std"]
+prover = ["dep:getrandom"]
+
+# Empirical zero-knowledge battery (paper Appendix A.6). The chain-submission helper bins
+# (proof -> raw SCALE call) are intentionally omitted from this peer-review artifact.
+[[bin]]
+name = "zk_leakage"
+required-features = ["prover"]
+
+[[bin]]
+name = "zk_evidence"
+required-features = ["prover"]

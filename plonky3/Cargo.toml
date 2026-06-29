@@ -1,0 +1,33 @@
+[package]
+name = "qbc-pq-confidential-p3"
+version = "0.1.0"
+edition = "2021"
+description = "Plonky3 reimplementation of the QBC post-quantum confidential circuits with NATIVE FRI zero-knowledge (HidingFriPcs). Research branch."
+license = "MIT"
+
+[dependencies]
+p3-air = { version = "0.6.1", default-features = false }
+p3-field = { version = "0.6.1", default-features = false }
+p3-goldilocks = { version = "0.6.1", default-features = false }
+p3-matrix = { version = "0.6.1", default-features = false }
+p3-uni-stark = { version = "0.6.1", default-features = false }
+p3-fri = { version = "0.6.1", default-features = false }
+p3-merkle-tree = { version = "0.6.1", default-features = false }
+p3-commit = { version = "0.6.1", default-features = false }
+p3-challenger = { version = "0.6.1", default-features = false }
+p3-dft = { version = "0.6.1", default-features = false }
+p3-symmetric = { version = "0.6.1", default-features = false }
+postcard = { version = "1", default-features = false, features = ["alloc"] }
+rand = { version = "0.10.1", default-features = false }
+# AUDIT FIX (F4): ChaCha20Rng is a CSPRNG; seeded with full 256-bit OS entropy it gives the
+# prover real hiding randomness (SmallRng/xoshiro seeded from 64 bits throttled it). no_std-capable.
+rand_chacha = { version = "0.10", default-features = false }
+getrandom = { version = "0.3", optional = true }
+
+[features]
+default = ["std", "prover"]
+std = []
+prover = ["std", "dep:getrandom"]
+
+[dev-dependencies]
+winterfell = "0.9"
