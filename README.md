@@ -24,8 +24,9 @@ Each directory is a self-contained Rust crate (stable toolchain).
 # panic-safety fuzz, adversarial public inputs, empirical amount-hiding at chance, verify cost.
 cd plonky3 && cargo test --release
 
-# no_std verifier builds for the runtime target class (wasm32):
-cd plonky3 && cargo build --target wasm32-unknown-unknown --no-default-features --release
+# no_std verifier builds for the runtime target class (wasm32). --lib builds only the verifier
+# library; the CLI provers under src/bin are std-only tools and are not part of the no_std surface.
+cd plonky3 && cargo build --lib --target wasm32-unknown-unknown --no-default-features --release
 
 # Masking path: range/opening tests + the masking-margin regression test (M1).
 # Use --release: the upstream Winterfell prover carries debug-assertions that are over-strict
