@@ -28,6 +28,11 @@ explicit about what is proven and what is evidenced: soundness is argued and tes
 zero-knowledge property is supported by a verified masking-margin and an empirical distinguisher at
 chance, and a formal zero-knowledge proof is the principal open problem for which we invite peer review.
 
+**Artifact availability.** The constructions, verifiers, provers, test vectors, and the empirical and
+panic-safety batteries described here are published for review at
+<https://github.com/QuantumAI-Blockchain/qbc-confidential-zk>. Each component is mapped to its
+corresponding section, and every claim that can be reproduced from a clean checkout is reproducible there.
+
 ## 1. Introduction
 
 A confidential payment must do two separate jobs. The first is to hide the amount. The second is to
@@ -283,11 +288,16 @@ window. A property change in a consensus host function is a node-software change
 
 ## 7. Performance
 
-A transfer proof is approximately forty-six to fifty kilobytes, and a public-value opening proof is
-approximately thirty kilobytes. Proving runs on the holder's device: a transfer proof is produced in roughly
-seventy-five milliseconds and an opening in roughly one hundred milliseconds in a browser through WebAssembly.
-Verification is in-runtime and deterministic. The prover and verifier compile to native targets and to the
-wasm32 target, so the same code path proves in the browser and verifies in consensus.
+We report sizes for both constructions, since they differ. On the live natively-zero-knowledge path the
+transfer proof is approximately one hundred ninety kilobytes and the public-value opening is approximately one
+hundred twenty kilobytes, the browser prover produces a transfer proof in roughly three hundred milliseconds,
+and in-runtime verification is roughly four milliseconds for a transfer and two milliseconds for an opening.
+Carrying the verifier in the runtime grows the compressed runtime by about fifty-eight kilobytes. On the
+original masking path the proofs were smaller, approximately forty-six to fifty kilobytes for a transfer and
+thirty kilobytes for an opening, at the cost that its hiding was evidenced rather than proven. In both cases
+proving runs on the holder's device and verification is in-runtime and deterministic, and the prover and
+verifier compile to native targets and to the wasm32 target, so the same code path proves in the browser and
+verifies in consensus.
 
 ## 8. Limitations and open problems
 

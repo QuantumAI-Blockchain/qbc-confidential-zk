@@ -19,10 +19,13 @@
 //! be a wrapped negative used to mint value. Built on the audited Winterfell prove/verify
 //! core; the AIR constraints below are the small, reviewable delta.
 //!
-//! `RANGE_BITS = 63`: confidential values are in `[0, 2^63)` smallest units = up to
-//! 9.2e10 QBC, comfortably above the 3.3e9 max supply, and strictly below the Goldilocks
-//! field modulus (~2^63.99) so reconstruction never wraps. (Plaintext balances remain u128
-//! on-chain; only the *confidential* value range is bounded, which is sound + sufficient.)
+//! `RANGE_BITS = 63` HERE: this module is the standalone single-value range circuit, used to
+//! demonstrate the range gadget in isolation, where a 63-bit bound stays strictly below the
+//! Goldilocks modulus (~2^63.99) so reconstruction never wraps. NOTE: the value-bearing
+//! transfer path uses a tighter `RANGE_BITS = 62` (see `zk_transfer.rs`, and the Plonky3
+//! `transfer.rs`), so that the sum of two outputs plus a fee cannot wrap the field in the balance
+//! equation. The paper's 62-bit soundness argument refers to that transfer bound, not to this
+//! standalone demo. (Plaintext balances remain u128 on-chain; only confidential values are bounded.)
 //!
 //! AIR: an MSB-first doubling accumulator over a 64-row trace. `acc[0]=0`,
 //! `acc[i+1]=2·acc[i]+bit[i]`, so `acc[63]=Σ bit[i]·2^(62-i) = value`; each `bit` is forced
@@ -67,7 +70,8 @@ pub mod range_commit;
 /// Full confidential transfer = balance/openings + per-output range proofs (linked by commitments).
 pub mod full;
 
-/// Confidential value range: `0 <= v < 2^RANGE_BITS`.
+/// Standalone range-demo bound: `0 <= v < 2^RANGE_BITS`. This is the isolated range circuit only;
+/// the value-bearing transfer path bounds values to 2^62 (see `zk_transfer.rs` / Plonky3 `transfer.rs`).
 pub const RANGE_BITS: usize = 63;
 /// Trace length (power of two): 64 rows = 63 accumulation steps + final value row.
 const TRACE_LEN: usize = 64;
@@ -356,7 +360,7 @@ mod tests {
 
     #[test]
     fn out_of_range_value_cannot_be_proven() {
-        // RANGE_BITS=62, so 2^62 is out of range — the prover refuses to build a trace.
+        // This standalone demo uses RANGE_BITS=63, so 2^63 is out of range — the prover refuses.
         let over = 1u64 << RANGE_BITS;
         assert!(prove_range(over).is_none(), "out-of-range value must not be provable");
     }

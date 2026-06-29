@@ -46,7 +46,8 @@ note→note transfers (both ends hidden). Milestones:
 - **M4 — browser prover + frontend note→note transfer**, battle-tested via the public relay.
 - **M5 — external audit prep.**
 
-Full design: [`docs/DESIGN.md`](docs/DESIGN.md).
+Full design and the formal zero-knowledge analysis: see the paper at [`../PAPER.md`](../PAPER.md)
+(Section 3.2 and Appendix A).
 
 ## Security
 

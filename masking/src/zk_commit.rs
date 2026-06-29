@@ -367,12 +367,19 @@ mod tests {
 
     #[test]
     fn zk_security_margin_holds() {
-        // Statistical ZK requires #masking(free random) rows > #trace openings.
-        // Openings per column ≈ num_queries + OOD frame (2). Masking rows = TRACE_LEN-(last_src+2).
+        // Statistical ZK requires #masking(free random) rows > #observed base-field values per column.
+        // Observed = num_queries (base-field rows) + the 2-row out-of-domain frame, and over the cubic
+        // extension each OOD element is 3 base-field coordinates, so the OOD frame contributes 2*3 = 6.
+        // (This is the corrected count; the authoritative figure is `crate::masking_margin()` = 14.)
         let last_src = TRACE_LEN - 1 - EXEMPT;
         let masking_rows = TRACE_LEN - (last_src + 2);
         let opts = crate::proof_options();
-        let openings = opts.num_queries() + 2; // queries + OOD current/next
+        let ext_degree = match opts.field_extension() {
+            winterfell::FieldExtension::None => 1,
+            winterfell::FieldExtension::Quadratic => 2,
+            winterfell::FieldExtension::Cubic => 3,
+        };
+        let openings = opts.num_queries() + 2 * ext_degree; // queries + OOD frame over the extension
         assert!(
             masking_rows > openings,
             "ZK margin violated: masking_rows={masking_rows} must exceed openings={openings}"

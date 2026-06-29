@@ -5,7 +5,7 @@
 //! ARK schedule, S-box exponents, sponge init) over `p3_goldilocks::Goldilocks`. A cross-check test
 //! asserts the digest equals Winterfell's `hash_elements`.
 
-use p3_field::{Field, PrimeCharacteristicRing, PrimeField64};
+use p3_field::{PrimeCharacteristicRing, PrimeField64};
 use p3_goldilocks::Goldilocks;
 
 use crate::constants::{ARK1, ARK2, CAPACITY_INIT, INV_ALPHA, MDS, NUM_ROUNDS, STATE_WIDTH};
