@@ -3,9 +3,11 @@ title: "Post-Quantum Confidential Transactions with In-Runtime STARK Verificatio
 slug: "pq-confidential-stark"
 authors: "Ash Brown, SusyLabs Research / QuantumAI Blockchain"
 date: "2026-06-29"
-version: "1.0 (preprint, for peer review)"
+version: "1.0.1 (preprint, for peer review)"
 status: "preprint"
 ---
+
+*Revision note, 10 November 2026: an earlier version of this paper said the runtime integration and the value-bearing promotion followed an independent review, that a third round of three independent expert reviews was commissioned, and that the prior construction's soundness was audited. No independent review has been performed yet. Reviews to date were internal: our own adversarial self-review, two internal reviewer passes, and a third internal round of three reviews. No third-party audit exists.*
 
 ## Abstract
 
@@ -249,7 +251,7 @@ lattice signature. None of the three relies on a problem that Shor's algorithm s
 ## 6. Adversarial review and remediation
 
 We subjected the system to adversarial self-review at the level of the constraint arithmetic, in addition to
-two independent reviewer passes over the integration. Two critical findings emerged and have been remediated,
+two internal reviewer passes over the integration. Two critical findings emerged and have been remediated,
 and we disclose them in the interest of transparency.
 
 The first was the field-wraparound inflation of Section 5.1. Before the fix, a prover could mint value by
@@ -266,7 +268,7 @@ A reviewer who trusts only the cryptographic primitives would have missed the in
 in the interaction between a field equation and an unbounded public input, which is why review at the level of
 the arithmetic matters.
 
-We then commissioned a third round of three independent expert reviews, over the AIR soundness, the
+We then ran a third round of three internal expert reviews, over the AIR soundness, the
 zero-knowledge hiding, and the protocol integration respectively. They agreed on a set of findings, which we
 have since closed on the live chain, and we disclose them here. The first is that the binding fix of Section 3.3
 had been applied to the zero-knowledge transfer path but not to the legacy first-generation opening proof, whose
@@ -591,7 +593,7 @@ milliseconds in the browser and the no_std verifier still builds for the runtime
 count, grinding, and blowup are a deploy-time security choice on the known size-versus-soundness curve, and
 a further reduction is available by narrowing the range gadget.
 
-The runtime integration has since been built, measured, and, following an independent review, deployed live.
+The runtime integration has since been built, measured, and, following an internal review, deployed live.
 The native-zero-knowledge verifier is wired into the runtime through two additive entry points, a governance
 seed and a note-to-note transfer, that operate on an isolated pool with no plaintext exit: notes can only be
 seeded by governance and moved note to note, never shielded in from a plaintext output nor unshielded out to
@@ -614,7 +616,7 @@ ramps now run under the same in-runtime verifier, with the same model as the exi
 burns a signature-authorized plaintext output and mints a note proven in zero knowledge to open to exactly its
 value, and an unshield spends a note proven to open to a revealed value, bound to its destination, and mints a
 plaintext output, fail-closed on a pool conservation counter so that no soundness defect can release more than
-was shielded in. This promotion was deployed only after an independent review and, because the verifier is
+was shielded in. This promotion was deployed only after an internal review and, because the verifier is
 in-runtime, as a pure runtime upgrade whose rollback is equally a pure runtime upgrade.
 
 The value-bearing path has been battle-tested on the live chain. A full round-trip moved real value through
@@ -623,8 +625,8 @@ was rejected, and the unshield to the rightful destination was accepted with the
 conservation counter returned to zero; a tampered proof of about one hundred twenty kilobytes was rejected in
 the block that included it without disturbing finality. Amount-hiding on this path is therefore a proven
 property of the proving system, running in consensus and carrying real value, alongside the prior construction,
-whose soundness is proven and audited and whose hiding is strongly evidenced. We make no stronger claim than
-that the proven-hiding path is now live and value-bearing and that an independent review preceded its
+whose soundness is proven and whose hiding is strongly evidenced. We make no stronger claim than
+that the proven-hiding path is now live and value-bearing and that an internal review preceded its
 deployment.
 
 ## Appendix B: Live deployment record
